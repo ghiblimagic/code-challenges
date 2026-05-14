@@ -148,6 +148,12 @@ RandomizedSet.prototype.remove = function (val) {
   // Overwrite val's slot with the tail element.
   // (For the edge case where val IS the tail element, this writes the same
   // value back into the same slot — harmless, and pop() cleans it up next.)
+
+  // NOTE: you might think to wrap this in `if (tailValue !== val)` to skip
+  // the write when removing the tail element itself. Avoid it — the branch
+  // check runs on every remove call, while a write to a recently-accessed
+  // cache slot is nearly free. Trading an unconditional cheap write for a
+  // conditional that always fires is a net loss. It add 1ms to the runtime on leetcode
   this.nums[indexToOverwrite] = tailValue;
 
   // Remove the now-duplicate tail element. pop() is O(1).
@@ -159,6 +165,8 @@ RandomizedSet.prototype.remove = function (val) {
     // tailValue moved from (this.nums.length) to indexToOverwrite.
     // Update its record so future lookups find it at its new position.
     this.valueToIndex.set(tailValue, indexToOverwrite);
+    // if we ran this when tailValue === value
+    // then the lookup table would have a ghost entry for the deleted array
   }
   // If tailValue === val, we were removing the last element in the array.
   // There's nothing to "move", so we skip the set() call above.
