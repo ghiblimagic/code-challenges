@@ -36,6 +36,9 @@ class Solution {
       let indexAfterSeperator = indexOfSeperator + 1;
       let indexAfterWordEnd = indexOfSeperator + 1 + length;
       // slice will stop at the element before the end index rather than including it
+
+      // so if the delimiter (#) appears within the string it doesn't matter, because its skipping over the amount of elements === length,
+      // aka its not looking for the delimiter in the current code
       res.push(str.slice(indexAfterSeperator, indexAfterWordEnd));
       //indexOfSeperator + 1 skips past the #
       // indexOfSeperator + 1 + length is exactly where the word ends
